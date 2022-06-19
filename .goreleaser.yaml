@@ -9,11 +9,43 @@ builds:
   - windows
   - darwin
 dockers:
-- image_templates:
-  - "ghcr.io/z5labs/hfs:{{.Tag }}"
-  - "ghcr.io/z5labs/hfs:v{{.Major }}"
-  - "ghcr.io/z5labs/hfs:v{{.Major }}.{{ .Minor }}"
-  - "ghcr.io/z5labs/hfs:latest"
+- use: buildx
+  goos: linux
+  goarch: amd64
+  image_templates:
+  - "ghcr.io/z5labs/{{ .ProjectName }}:{{.Tag }}-amd64"
+  - "ghcr.io/z5labs/{{ .ProjectName }}:v{{.Major }}-amd64"
+  - "ghcr.io/z5labs/{{ .ProjectName }}:v{{.Major }}.{{ .Minor }}-amd64"
+  - "ghcr.io/z5labs/{{ .ProjectName }}:latest-amd64"
+  build_flag_templates:
+  - "--platform=linux/amd64"
+  - "--label=org.opencontainers.image.created={{.Date}}"
+  - "--label=org.opencontainers.image.title={{.ProjectName}}"
+  - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+  - "--label=org.opencontainers.image.version={{.Version}}"
+- use: buildx
+  goos: linux
+  goarch: arm64
+  image_templates:
+  - "ghcr.io/z5labs/{{ .ProjectName }}:{{.Tag }}-arm64v8"
+  - "ghcr.io/z5labs/{{ .ProjectName }}:v{{.Major }}-arm64v8"
+  - "ghcr.io/z5labs/{{ .ProjectName }}:v{{.Major }}.{{ .Minor }}-arm64v8"
+  - "ghcr.io/z5labs/{{ .ProjectName }}:latest-arm64v8"
+  build_flag_templates:
+  - "--platform=linux/arm64/v8"
+  - "--label=org.opencontainers.image.created={{.Date}}"
+  - "--label=org.opencontainers.image.title={{.ProjectName}}"
+  - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+  - "--label=org.opencontainers.image.version={{.Version}}"
+docker_manifests:
+- name_template: ghcr.io/z5labs/{{ .ProjectName }}:{{ .Version }}
+  image_templates:
+  - ghcr.io/z5labs/{{ .ProjectName }}:{{ .Version }}-amd64
+  - ghcr.io/z5labs/{{ .ProjectName }}:{{ .Version }}-arm64v8
+- name_template: ghcr.io/z5labs/{{ .ProjectName }}:latest
+  image_templates:
+  - ghcr.io/z5labs/{{ .ProjectName }}:latest-amd64
+  - ghcr.io/z5labs/{{ .ProjectName }}:latest-arm64v8
 archives:
 - name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
   wrap_in_directory: true
