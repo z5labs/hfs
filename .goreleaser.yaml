@@ -38,10 +38,10 @@ dockers:
   - "--label=org.opencontainers.image.revision={{.FullCommit}}"
   - "--label=org.opencontainers.image.version={{.Version}}"
 docker_manifests:
-- name_template: ghcr.io/z5labs/{{ .ProjectName }}:{{ .Version }}
+- name_template: ghcr.io/z5labs/{{ .ProjectName }}:v{{ .Version }}
   image_templates:
-  - ghcr.io/z5labs/{{ .ProjectName }}:{{ .Version }}-amd64
-  - ghcr.io/z5labs/{{ .ProjectName }}:{{ .Version }}-arm64v8
+  - ghcr.io/z5labs/{{ .ProjectName }}:v{{ .Version }}-amd64
+  - ghcr.io/z5labs/{{ .ProjectName }}:v{{ .Version }}-arm64v8
 - name_template: ghcr.io/z5labs/{{ .ProjectName }}:latest
   image_templates:
   - ghcr.io/z5labs/{{ .ProjectName }}:latest-amd64
