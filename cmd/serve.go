@@ -30,12 +30,9 @@ var serveCmd = &cobra.Command{
 		if err != nil {
 			zap.L().Fatal("invalid root filepath", zap.Error(err))
 		}
-		expiration := viper.GetDuration("expiration")
 
 		// Cache heavily sought after files in memory
-		base := afero.NewBasePathFs(afero.NewOsFs(), root)
-		inmem := afero.NewMemMapFs() // TODO: this is probably not prod capable so it should be replaced
-		fs := afero.NewCacheOnReadFs(base, inmem, expiration)
+		fs := afero.NewBasePathFs(afero.NewOsFs(), root)
 		h := hfshttp.FileServer(fs)
 		s := &http.Server{ // TODO: add more config
 			Handler: h,
@@ -84,10 +81,8 @@ func init() {
 
 	// Local flags
 	serveCmd.Flags().String("addr", ":8080", "Address for HFS to listen on")
-	serveCmd.Flags().Duration("expiration", 1*time.Minute, "Set in-memory cache expiration for files.")
 
 	// Viper
 	viper.BindPFlag("addr", serveCmd.Flags().Lookup("addr"))
 	viper.BindPFlag("root", serveCmd.Flags().Lookup("root"))
-	viper.BindPFlag("expiration", serveCmd.Flags().Lookup("expiration"))
 }
